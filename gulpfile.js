@@ -4,7 +4,6 @@ const { src, dest, series, parallel, watch } = require("gulp");
 const postcss = require("gulp-postcss");
 const replace = require("gulp-replace");
 const sass = require("gulp-sass")(require("sass-embedded"));
-const sourcemaps = require("gulp-sourcemaps");
 const del = require("del");
 const svgSprite = require("gulp-svgstore");
 const rename = require("gulp-rename");
@@ -180,15 +179,13 @@ function buildSass() {
     ],
   };
 
-  return src([`${paths.dist.theme}/*.scss`.replace("//", "/")])
-    .pipe(sourcemaps.init({ largeFile: true }))
+  return src([`${paths.dist.theme}/*.scss`.replace("//", "/")], {sourcemaps: true})
     .pipe(
       sass({ includePaths: buildSettings.includes }).on("error", handleError)
     )
     .pipe(replace(/\buswds @version\b/g, `based on uswds v${pkg}`))
     .pipe(postcss(buildSettings.plugins))
-    .pipe(sourcemaps.write("."))
-    .pipe(dest(paths.dist.css));
+    .pipe(dest(paths.dist.css, {sourcemaps: '.'}));
 }
 
 function watchSass() {
