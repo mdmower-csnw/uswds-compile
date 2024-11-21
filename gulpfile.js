@@ -66,6 +66,10 @@ let settings = {
     },
     browserslist: ["> 2%", "last 2 versions", "IE 11", "not dead"],
     sassSourcemaps: true,
+    /** @type {Omit<import("sass-embedded").Options<"async">, "outputStyle">} */
+    sassOptions: {
+      quietDeps: true,
+    },
   },
   sprite: {
     width: 24,
@@ -196,9 +200,9 @@ function buildSass() {
   })
     .pipe(
       sass({
+        ...settings.compile.sassOptions,
         outputStyle: "compressed",
         includePaths: buildSettings.includes,
-        silenceDeprecations: ["mixed-decls"]
       }).on("error", handleError)
     )
     .pipe(replace(/\buswds @version\b/g, `based on uswds v${pkg}`))
